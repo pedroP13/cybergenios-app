@@ -1,6 +1,6 @@
 import {IsInt, IsNotEmpty, IsString} from 'class-validator';
+import {ApiProperty} from '@nestjs/swagger';
 export class CreateCarDto {
-    
     @IsNotEmpty()
     @IsString()
     name: string;

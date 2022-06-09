@@ -1,25 +1,49 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiBody} from '@nestjs/swagger';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { CarEntity } from './repository/car.entity';
 
 @Controller('cars')
 export class CarsController {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(
+    private readonly carsService: CarsService) {
+  }
 
+  @ApiBody({ type: CarEntity })
   @Post()
-  create(@Body() createCarDto: CreateCarDto) {
-    return this.carsService.create(createCarDto);
+  async create(@Body()createCarDto: CreateCarDto){ 
+    try {
+      const createCar = await this.carsService.create(createCarDto);
+      if(createCar) return "Car created successfully"; 
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.carsService.findAll();
+  async findAll(): Promise<CarEntity[]>  {
+    try {
+      const getAllCars = await this.carsService.findAll();
+      if (getAllCars.length > 0) return getAllCars;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.carsService.findOne(+id);
+    try {
+      const GetCarByid =  this.carsService.findOne(+id); 
+      if(GetCarByid) return GetCarByid;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+    
   }
 
   @Patch(':id')
